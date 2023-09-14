@@ -1,22 +1,21 @@
-import requests
-import json
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
-
-headers = {
-    "Authorization": "Bearer " + os.getenv("API_TOKEN"),
-}
+from util import *
+from api import *
 
 
 def run():
-    r = requests.get(
-        "https://lichess.org/api/account",
-        headers=headers,
-    )
+    api = APIClient()
+    pretty_print_json(api.get_user_public_data("amarell"))
+    # games = api.get_games_by_id(["TJxUmbWK", "4OtIh2oh"])
+    # games = api.get_games_from_user("Vhtool")
 
-    print(json.dumps(r.json(), indent=4))
+    # for g in games:
+    #     print(
+    #         json.dumps(
+    #             g,
+    #             sort_keys=True,
+    #             indent=4,
+    #         )
+    #     )
 
 
 if __name__ == "__main__":
