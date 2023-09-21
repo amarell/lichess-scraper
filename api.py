@@ -20,9 +20,14 @@ headers = {
 
 
 class APIClient:
-    def __init__(self):
-        self.api_token = os.getenv("API_TOKEN")
-        self.base_url = "https://lichess.org/api"
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(APIClient, cls).__new__(cls)
+            cls._instance.api_token = os.getenv("API_TOKEN")
+            cls._instance.base_url = "https://lichess.org/api"
+        return cls._instance
 
     def get_games_by_id(self, ids):
         payload = ",".join(ids)
@@ -38,7 +43,6 @@ class APIClient:
         return r.json(cls=ndjson.Decoder)
 
     def get_games_from_user(self, username, max_amount=10):
-        print("running get games from user...")
         r = requests.get(
             f"{self.base_url}/games/user/{username}?pgnInJson=true&clocks=true&accuracy=true&opening=true&max={max_amount}",
             headers=game_headers,
