@@ -14,8 +14,7 @@ def get_n_games(n, start_user, max_games_per_user=10):
     api = APIClient()
 
     # initial state
-    games = []
-    game_ids = []
+    games = set()
     user = start_user
 
     if user is None or len(user) == 0:
@@ -24,11 +23,9 @@ def get_n_games(n, start_user, max_games_per_user=10):
     while len(games) < n:
         user_games = api.get_games_from_user(user, max_amount=max_games_per_user)
         for g in user_games:
-            if g["id"] not in game_ids:
-                game_ids.append(g["id"])
-                games.append(Game(g))
+            games.add(Game(g))
 
-        last_game = games[-1]
+        last_game = Game(user_games[-1])
 
         if is_user_white(user, last_game):
             user = last_game.black.username

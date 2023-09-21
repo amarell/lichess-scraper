@@ -45,3 +45,9 @@ class Game:
             f"Moves: {self.moves}\n"
             f"TimeControl: Initial: {self.time_control.initial}, Increment: {self.time_control.increment}, Total Time: {self.time_control.total_time} seconds\n"
         )
+
+    def __hash__(self):
+        return hash(self.id)
+
+    def __eq__(self, other):
+        return isinstance(other, Game) and self.id == other.id
