@@ -15,7 +15,7 @@ def get_current_session_streak():
     return
 
 
-def isUserWhite(user, game):
+def is_user_white(user, game):
     return game.white.username == user
 
 

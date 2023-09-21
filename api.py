@@ -2,6 +2,7 @@ import os
 import dotenv
 import requests
 import ndjson
+import json
 
 dotenv.load_dotenv()
 
@@ -36,9 +37,10 @@ class APIClient:
 
         return r.json(cls=ndjson.Decoder)
 
-    def get_games_from_user(self, username):
+    def get_games_from_user(self, username, max_amount=10):
+        print("running get games from user...")
         r = requests.get(
-            f"{self.base_url}/games/user/{username}?pgnInJson=true&clocks=true&accuracy=true&opening=true&max=10",
+            f"{self.base_url}/games/user/{username}?pgnInJson=true&clocks=true&accuracy=true&opening=true&max={max_amount}",
             headers=game_headers,
         )
 
@@ -51,3 +53,13 @@ class APIClient:
         )
 
         return r.json()
+
+    def stream_game(self, id):
+        r = requests.get(
+            f"{self.base_url}/stream/game/{id}", headers=game_headers, stream=True
+        )
+
+        for line in r.iter_lines():
+            if line:
+                decoded_line = line.decode("utf-8")
+                print(json.loads(decoded_line))

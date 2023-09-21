@@ -6,6 +6,8 @@ More specifically, it is used to collect data about games played by random users
 
 ## User traversal algorithm
 
+This simple algorithm is used to collect games from players of all levels.
+
 1. Start at a random user
 2. Get their biggest loss
    - Repeat steps for their opponent
@@ -22,3 +24,8 @@ One CSV record essentially represents the features of the game that was played a
 2. Black ELO
 3. PGN (with time annotations)
 4. ...
+
+# IDEAS
+
+- Real time prediction using Lichess streaming API
+- Feeding real time data into a prediction algorithm
