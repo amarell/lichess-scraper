@@ -13,6 +13,8 @@ This simple algorithm is used to collect games from players of all levels.
    - Repeat steps for their opponent
 3. Get their biggest win
    - Repeat steps for their opponent
+  
+> Currently using a different algorithm, as I'm not sure I can get this info through Lichess API.
 
 ## Output
 
