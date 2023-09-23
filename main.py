@@ -8,13 +8,11 @@ from scraper import *
 def run():
     # scraper = Scraper()
 
-    games = get_n_games(20, "szymonoberc", 10)
+    games = get_n_games(10, "amarell", 10)
 
-    games_with_history = {
-        g for g in games if len(g.black_history) > 0 or len(g.white_history) > 0
-    }
-
-    for g in games_with_history:
+    for g in sorted(games, key=lambda g: g.index):
+        print(f"Game id :   {g.id}")
+        print(f"Player ids: {g.white.username} vs : {g.black.username}")
         print(f"White history: {g.white_history}")
         print(f"Black history: {g.black_history}")
 
