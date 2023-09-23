@@ -23,7 +23,8 @@ def get_n_games(n, start_user, max_games_per_user=10):
     while len(games) < n:
         user_games = api.get_games_from_user(user, max_amount=max_games_per_user)
         for g in user_games:
-            games.add(Game(g))
+            if g["variant"] == "standard":
+                games.add(Game(g))
 
         last_game = Game(user_games[-1])
 

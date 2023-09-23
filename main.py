@@ -2,13 +2,15 @@ from util import *
 from game_util import *
 from api import *
 from models.game import Game
-import asyncio
+from scraper import *
 
 
 def run():
-    games = get_n_games(20, "forgotten_character")
+    scraper = Scraper()
 
-    print(games)
+    best_win, worst_loss = scraper.get_user_extremes("forgotten_character", "rapid")
+
+    print(f"{best_win} - {worst_loss}")
 
     # api.stream_game("h9nyJUuo")
     # games = api.get_games_by_id(["TJxUmbWK", "4OtIh2oh"])
