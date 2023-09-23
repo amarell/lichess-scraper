@@ -22,9 +22,28 @@ def get_n_games(n, start_user, max_games_per_user=10):
 
     while len(games) < n:
         user_games = api.get_games_from_user(user, max_amount=max_games_per_user)
+
+        i = 0
+
         for g in user_games:
+            i += 1
             if g["variant"] == "standard":
-                games.add(Game(g))
+                new_game = Game(g)
+                if i > len(user_games) - 5:
+                    if is_user_white(user, new_game):
+                        new_game.white_history = [
+                            Game(g).get_users_game_outcome(user)
+                            for g in user_games[i - 5 : i]
+                        ]
+                    else:
+                        new_game.black_history = [
+                            Game(g).get_users_game_outcome(user)
+                            for g in user_games[i - 5 : i]
+                        ]
+
+                games.add(new_game)
+
+        i = 0
 
         last_game = Game(user_games[-1])
 

@@ -6,11 +6,17 @@ from scraper import *
 
 
 def run():
-    scraper = Scraper()
+    # scraper = Scraper()
 
-    best_win, worst_loss = scraper.get_user_extremes("forgotten_character", "rapid")
+    games = get_n_games(20, "szymonoberc", 10)
 
-    print(f"{best_win} - {worst_loss}")
+    games_with_history = {
+        g for g in games if len(g.black_history) > 0 or len(g.white_history) > 0
+    }
+
+    for g in games_with_history:
+        print(f"White history: {g.white_history}")
+        print(f"Black history: {g.black_history}")
 
     # api.stream_game("h9nyJUuo")
     # games = api.get_games_by_id(["TJxUmbWK", "4OtIh2oh"])

@@ -1,6 +1,14 @@
 from models.player import Player
 from models.opening import Opening
 from models.time_control import TimeControl
+from enum import Enum
+from util import *
+
+
+class GameOutcome(Enum):
+    DEFEAT = -1
+    DRAW = 0
+    WIN = 1
 
 
 class Game:
@@ -27,6 +35,9 @@ class Game:
 
         self.opening = Opening(game_data.get("opening", {}))
 
+        self.black_history = []
+        self.white_history = []
+
         self.moves = game_data.get("moves", "")
         self.clocks = game_data.get("clocks", [])
         self.pgn = game_data.get("pgn", "")
@@ -45,6 +56,23 @@ class Game:
             f"Moves: {self.moves}\n"
             f"TimeControl: Initial: {self.time_control.initial}, Increment: {self.time_control.increment}, Total Time: {self.time_control.total_time} seconds\n"
         )
+
+    def get_users_game_outcome(self, user):
+        if is_user_white(user, self):
+            if self.winner == "white":
+                return GameOutcome.WIN
+            elif self.winner == "":
+                return GameOutcome.DRAW
+            else:
+                return GameOutcome.DEFEAT
+
+        else:
+            if self.winner == "white":
+                return GameOutcome.DEFEAT
+            elif self.winner == "":
+                return GameOutcome.DRAW
+            else:
+                return GameOutcome.WIN
 
     def __hash__(self):
         return hash(self.id)
