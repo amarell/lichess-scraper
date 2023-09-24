@@ -6,15 +6,21 @@ More specifically, it is used to collect data about games played by random users
 
 ## User traversal algorithm
 
-This simple algorithm is used to collect games from players of all levels.
-
+<del>
 1. Start at a random user
 2. Get their biggest loss
    - Repeat steps for their opponent
 3. Get their biggest win
    - Repeat steps for their opponent
-  
-> Currently using a different algorithm, as I'm not sure I can get this info through Lichess API.
+</del>
+
+1. Start at a random user
+2. If their rating is crossing the max threshold:
+   - Go to the player that they had the worst defeat against
+3. If their rating is crossing the min threshold:
+   - Go the the player that they had the best victory against
+
+This way we are ensuring a diverse dataset that contains games played at all levels.
 
 ## Output
 

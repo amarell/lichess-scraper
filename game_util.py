@@ -1,6 +1,7 @@
 from util import *
 from models.game import Game
 from api import *
+from scraper import *
 
 
 """
@@ -15,16 +16,24 @@ history_offset - how many games to keep in history
 """
 
 
-def get_n_games(n, start_user, max_games_per_user=10, history_offset=5):
+def get_n_games(
+    n,
+    start_user,
+    max_games_per_user=10,
+    history_offset=5,
+    max_elo_threshold=1800,
+    min_elo_threshold=800,
+):
     api = APIClient()
+    scraper = Scraper()
 
-    # initial state
     games = set()
     user = start_user
 
     if user is None or len(user) == 0:
         raise ValueError("Please provide id of the first user.")
 
+    climb = True
     game_index = 0
 
     while len(games) < n:
@@ -35,7 +44,7 @@ def get_n_games(n, start_user, max_games_per_user=10, history_offset=5):
         i = 0
 
         for g in user_games:
-            if g["variant"] == "standard":
+            if "variant" in g.keys() and g["variant"] == "standard":
                 new_game = Game(g)
                 if i < len(user_games) - history_offset:
                     if is_user_white(user, new_game):
@@ -51,15 +60,19 @@ def get_n_games(n, start_user, max_games_per_user=10, history_offset=5):
                         new_game.index = game_index
                         game_index += 1
                         games.add(new_game)
+
+                        if new_game.white.rating > max_elo_threshold:
+                            climb = False
+                        elif new_game.white.rating < min_elo_threshold:
+                            climb = True
+
                 i += 1
 
         i = 0
 
-        last_game = list(sorted(games, key=lambda game: game.index))[-1]
+        best_win_against, worst_defeat_against = scraper.get_user_extremes(
+            user, list(games)[0].time_control.name.lower()
+        )
 
-        if is_user_white(user, last_game):
-            user = last_game.black.username
-        else:
-            user = last_game.white.username
-
+        user = best_win_against if climb else worst_defeat_against
     return games
