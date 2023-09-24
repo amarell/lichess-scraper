@@ -6,14 +6,6 @@ More specifically, it is used to collect data about games played by random users
 
 ## User traversal algorithm
 
-<del>
-1. Start at a random user
-2. Get their biggest loss
-   - Repeat steps for their opponent
-3. Get their biggest win
-   - Repeat steps for their opponent
-</del>
-
 1. Inputs:
    - `n` - number of wanted games
    - `start_user` - the first user from which to start the traversal (selected randomly)
@@ -25,7 +17,8 @@ More specifically, it is used to collect data about games played by random users
    - Go to the player that they had the worst defeat against
 4. If their rating is crossing the `min_elo_treshold`:
    - Go the the player that they had the best victory against
-5. Repeat the steps for the next player until the number of collected games reaches `n`
+5. If neither, then it will go in the current direction. By default, the first direction is upwards.
+6. Repeat the steps for the next player until the number of collected games reaches `n`
 
 This way we are ensuring a diverse dataset that contains games played at all levels.
 
