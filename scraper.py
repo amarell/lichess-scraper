@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 import urllib
+from util import *
+import unicodedata
 
 
 class Scraper:
@@ -26,22 +28,35 @@ class Scraper:
             tables = result_split.find_all("table")
 
             worst_losses_against = [
-                link.text for link in tables[1].find_all("a", class_="user-link")
+                unicodedata.normalize("NFKD", link.text).split(" ")[1]
+                if is_titled_player(unicodedata.normalize("NFKD", link.text))
+                else link.text
+                for link in tables[1].find_all("a", class_="user-link")
             ]
             best_victories_against = [
-                link.text for link in tables[0].find_all("a", class_="user-link")
+                unicodedata.normalize("NFKD", link.text).split(" ")[1]
+                if is_titled_player(unicodedata.normalize("NFKD", link.text))
+                else link.text
+                for link in tables[0].find_all("a", class_="user-link")
             ]
+
+            print(best_victories_against)
+            print(worst_losses_against)
 
             active_account_win = None
             active_account_loss = None
 
             for user in best_victories_against:
-                if not self.is_account_banned(user):
+                if not self.is_account_banned(user) and not self.is_account_closed(
+                    user
+                ):
                     active_account_win = user
                     break
 
             for user in worst_losses_against:
-                if not self.is_account_banned(user):
+                if not self.is_account_banned(user) and not self.is_account_closed(
+                    user
+                ):
                     active_account_loss = user
                     break
 
@@ -61,3 +76,10 @@ class Scraper:
         except:
             print(f"User {user} doesn't exist.")
             return False
+
+    def is_account_closed(self, user):
+        try:
+            html = urllib.request.urlopen(f"{self.base_url}@/{user}").read()
+            return False
+        except:
+            return True

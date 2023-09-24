@@ -15,6 +15,19 @@ def get_current_session_streak():
     return
 
 
+def is_titled_player(user):
+    return user.split(" ")[0] in [
+        "GM",
+        "IM",
+        "FM",
+        "CM",
+        "WGM",
+        "WIM",
+        "WFM",
+        "WCM",
+    ]
+
+
 def is_user_white(user, game):
     return game.white.username == user
 
