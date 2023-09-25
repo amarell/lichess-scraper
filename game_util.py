@@ -74,5 +74,15 @@ def get_n_games(
             user, list(games)[0].time_control.name.lower()
         )
 
+        prev_user = user
         user = best_win_against if climb else worst_defeat_against
+
+        if user is None:
+            last_game = list(sorted(games, key=lambda game: game.index))[-1]
+            user = (
+                last_game.black.username
+                if is_user_white(prev_user, last_game)
+                else last_game.white.username
+            )
+
     return games
