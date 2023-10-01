@@ -79,3 +79,24 @@ class Game:
 
     def __eq__(self, other):
         return isinstance(other, Game) and self.id == other.id
+
+    def toList(self):
+        return [
+            self.id,
+            self.rated,
+            self.variant,
+            self.time_control.get_time_control_name(),
+            self.perf,
+            self.status,
+            self.winner,
+            self.white.username,
+            self.black.username,
+            self.white.rating,
+            self.black.rating,
+            self.opening.name,
+            self.opening.eco,
+            self.opening.ply,
+            self.moves,
+            [outcome.value for outcome in self.black_history],
+            [outcome.value for outcome in self.white_history],
+        ]

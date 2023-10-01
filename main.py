@@ -6,27 +6,9 @@ from scraper import *
 
 
 def run():
-    # scraper = Scraper()
-
     games = get_n_games(10, "Roaccutane", 10)
 
-    for g in sorted(games, key=lambda g: g.index):
-        print(f"Player ids: {g.white.username} vs : {g.black.username}")
-        print(f"White rating: {g.white.rating} vs : {g.black.rating}")
-        print(f"{g.time_control.name}")
-
-    # api.stream_game("h9nyJUuo")
-    # games = api.get_games_by_id(["TJxUmbWK", "4OtIh2oh"])
-    # games = api.get_games_from_user("Vhtool")
-
-    # for g in games:
-    #     print(
-    #         json.dumps(
-    #             g,
-    #             sort_keys=True,
-    #             indent=4,
-    #         )
-    #     )
+    dump_games_to_csv(games)
 
 
 if __name__ == "__main__":

@@ -1,9 +1,37 @@
 import json
+import csv
 
 
-# TODO
-def dump_json_into_csv(json):
-    return
+def dump_games_to_csv(games):
+    data = [g.toList() for g in games]
+
+    headers = [
+        "id",
+        "Rated",
+        "Variant",
+        "Time Control",
+        "Performance",
+        "Status",
+        "Winner",
+        "White Username",
+        "Black Username",
+        "White Rating",
+        "Black Rating",
+        "Opening Name",
+        "Opening Eco",
+        "Opening PLY",
+        "Moves",
+        "Black History",
+        "White History",
+    ]
+
+    with open("output.csv", mode="w", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow(headers)
+        for row in data:
+            writer.writerow(row)
+
+    file.close()
 
 
 def pretty_print_json(json_content):
