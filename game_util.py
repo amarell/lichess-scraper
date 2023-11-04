@@ -1,5 +1,5 @@
 from util import *
-from models.game import Game
+from models.game import Game, GameOutcome
 from api import *
 from scraper import *
 
@@ -43,30 +43,20 @@ def get_n_games(
 
         i = 0
 
-        for g in user_games:
-            if "variant" in g.keys() and g["variant"] == "standard":
-                new_game = Game(g)
-                if i < len(user_games) - history_offset:
-                    if is_user_white(user, new_game):
-                        new_game.white_history = [
-                            Game(g).get_users_game_outcome(user)
-                            for g in user_games[i + 1 : i + history_offset + 1]
-                        ]
-                    else:
-                        new_game.black_history = [
-                            Game(g).get_users_game_outcome(user)
-                            for g in user_games[i + 1 : i + history_offset + 1]
-                        ]
-                        new_game.index = game_index
-                        game_index += 1
-                        games.add(new_game)
+        for g in user_games[: len(user_games) - history_offset]:
+            new_game = Game(g)
+            new_game = fill_history(new_game, history_offset, user, user_games, i)
+            new_game.index = game_index
 
-                        if new_game.white.rating > max_elo_threshold:
-                            climb = False
-                        elif new_game.white.rating < min_elo_threshold:
-                            climb = True
+            game_index += 1
+            games.add(new_game)
 
-                i += 1
+            if new_game.white.rating > max_elo_threshold:
+                climb = False
+            elif new_game.white.rating < min_elo_threshold:
+                climb = True
+
+            i += 1
 
         i = 0
 
@@ -86,3 +76,54 @@ def get_n_games(
             )
 
     return games
+
+
+def fill_history(game, history_offset, user, user_games, current_index):
+    scraper = Scraper()
+    api = APIClient()
+
+    if is_user_white(user, game):
+        game.white_history = [
+            Game(g).get_users_game_outcome(user)
+            for g in user_games[current_index + 1 : current_index + history_offset + 1]
+        ]
+    else:
+        game.black_history = [
+            Game(g).get_users_game_outcome(user)
+            for g in user_games[current_index + 1 : current_index + history_offset + 1]
+        ]
+
+    if is_user_white(user, game):
+        if scraper.is_account_closed(game.black.username) or scraper.is_account_banned(
+            game.black.username
+        ):
+            # The idea is that if one user got banned, they were cheating and likely won all their past games
+            # I should probably think of something else to handle this scenario
+            game.black_history = [GameOutcome.WIN] * history_offset
+        else:
+            game.black_history = [
+                Game(g).get_users_game_outcome(game.black.username)
+                for g in api.get_games_from_user_until(
+                    game.black.username,
+                    game.last_move_at,
+                    history_offset + 1,
+                )[1:]
+            ]
+    else:
+        if scraper.is_account_closed(game.white.username) or scraper.is_account_banned(
+            game.white.username
+        ):
+            # The idea is that if one user got banned, they were cheating and likely won all their past games
+            # I should probably think of something else to handle this scenario
+            game.white_history = [GameOutcome.WIN] * history_offset
+        else:
+            game.white_history = [
+                Game(g).get_users_game_outcome(game.white.username)
+                for g in api.get_games_from_user_until(
+                    game.white.username,
+                    game.last_move_at,
+                    history_offset + 1,
+                )[1:]
+            ]
+
+    return game

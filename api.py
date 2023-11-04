@@ -44,7 +44,20 @@ class APIClient:
 
     def get_games_from_user(self, username, max_amount=10):
         r = requests.get(
-            f"{self.base_url}/games/user/{username}?pgnInJson=true&clocks=true&accuracy=true&opening=true&max={max_amount}",
+            f"{self.base_url}/games/user/{username}?pgnInJson=true&clocks=true&accuracy=true&opening=true&max={max_amount}&perfType=ultraBullet,bullet,blitz,rapid,classical",
+            headers=game_headers,
+        )
+
+        return r.json(cls=ndjson.Decoder)
+
+    def get_games_from_user_until(
+        self,
+        username,
+        until,
+        max_amount=10,
+    ):
+        r = requests.get(
+            f"{self.base_url}/games/user/{username}?pgnInJson=true&clocks=true&accuracy=true&opening=true&max={max_amount}&until={until}&perfType=ultraBullet,bullet,blitz,rapid,classical",
             headers=game_headers,
         )
 
