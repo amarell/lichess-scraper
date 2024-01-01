@@ -3,6 +3,7 @@ import dotenv
 import requests
 import ndjson
 import json
+import time
 
 dotenv.load_dotenv()
 
@@ -47,6 +48,14 @@ class APIClient:
             f"{self.base_url}/games/user/{username}?pgnInJson=true&clocks=true&accuracy=true&opening=true&max={max_amount}&perfType=ultraBullet,bullet,blitz,rapid,classical",
             headers=game_headers,
         )
+        if r.status_code == 429:
+            print("Waiting for rate limiting to go away...")
+            time.sleep(60)
+
+            r = requests.get(
+                f"{self.base_url}/games/user/{username}?pgnInJson=true&clocks=true&accuracy=true&opening=true&max={max_amount}&perfType=ultraBullet,bullet,blitz,rapid,classical",
+                headers=game_headers,
+            )
 
         return r.json(cls=ndjson.Decoder)
 
@@ -61,6 +70,15 @@ class APIClient:
             headers=game_headers,
         )
 
+        # so there is rate limiting here
+        if r.status_code == 429:
+            print("Waiting for rate limiting to go away...")
+            time.sleep(60)
+            r = requests.get(
+                f"{self.base_url}/games/user/{username}?pgnInJson=true&clocks=true&accuracy=true&opening=true&max={max_amount}&until={until}&perfType=ultraBullet,bullet,blitz,rapid,classical",
+                headers=game_headers,
+            )
+
         return r.json(cls=ndjson.Decoder)
 
     def get_user_public_data(self, username):
@@ -70,6 +88,19 @@ class APIClient:
         )
 
         return r.json()
+
+    def get_games_from_tv(self):
+        r = requests.get(f"{self.base_url}/tv/rapid", headers=game_headers)
+
+        # so there is rate limiting here
+        if r.status_code == 429:
+            print("Waiting for rate limiting to go away...")
+            time.sleep(60)
+            r = requests.get(
+                f"{self.base_url}/tv/rapid",
+                headers=game_headers,
+            )
+        return r.json(cls=ndjson.Decoder)
 
     def stream_game(self, id):
         r = requests.get(

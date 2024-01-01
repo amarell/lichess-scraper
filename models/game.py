@@ -44,6 +44,8 @@ class Game:
 
         time_control_data = game_data.get("clock", {})
         self.time_control = TimeControl(time_control_data)
+        self.black_closed = False
+        self.white_closed = False
 
     def __str__(self):
         return (
@@ -99,4 +101,6 @@ class Game:
             self.moves,
             [outcome.value for outcome in self.black_history],
             [outcome.value for outcome in self.white_history],
+            self.black_closed,
+            self.white_closed,
         ]

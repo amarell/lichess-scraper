@@ -6,13 +6,12 @@ from scraper import *
 
 
 def run():
-    games = get_n_games(10, "soinne", 10)
-
-    for g in games:
-        print("White: " + g.black.username + "vs. " + "White: " + g.white.username)
-        print(g.white_history)
-        print(g.black_history)
-    # dump_games_to_csv(games)
+    games = get_n_games(1000, "Martexx", 10)
+    # games = get_n_games_new(1000, "MisaSoko", 10)
+    # print("White: " + g.black.username + "vs. " + "White: " + g.white.username)
+    # print(g.white_history)
+    # print(g.black_history)
+    dump_games_to_csv(games)
 
 
 if __name__ == "__main__":

@@ -9,23 +9,25 @@ def dump_games_to_csv(games):
         "id",
         "Rated",
         "Variant",
-        "Time Control",
+        "Time_Control",
         "Performance",
         "Status",
         "Winner",
-        "White Username",
-        "Black Username",
-        "White Rating",
-        "Black Rating",
-        "Opening Name",
-        "Opening Eco",
-        "Opening PLY",
+        "White_Username",
+        "Black_Username",
+        "White_Rating",
+        "Black_Rating",
+        "Opening_Name",
+        "Opening_Eco",
+        "Opening_PLY",
         "Moves",
-        "Black History",
-        "White History",
+        "Black_History",
+        "White_History",
+        "Black_Account_Closed",
+        "White_Account_Closed",
     ]
 
-    with open("output.csv", mode="w", newline="") as file:
+    with open("2k.csv", mode="w", newline="", encoding="utf-8") as file:
         writer = csv.writer(file)
         writer.writerow(headers)
         for row in data:
@@ -48,6 +50,7 @@ def is_titled_player(user):
         "WIM",
         "WFM",
         "WCM",
+        "NM",
     ]
 
 

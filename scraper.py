@@ -40,6 +40,8 @@ class Scraper:
                 for link in tables[0].find_all("a", class_="user-link")
             ]
 
+            print(best_victories_against, worst_losses_against)
+
             active_account_win = None
             active_account_loss = None
 

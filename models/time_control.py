@@ -12,12 +12,12 @@ class TimeControl:
 
     def get_time_control_name(self):
         if self.est_game_duration < 29:
-            return "UltraBullet"
+            return "ultraBullet"
         elif self.est_game_duration < 179:
-            return "Bullet"
+            return "bullet"
         elif self.est_game_duration < 479:
-            return "Blitz"
+            return "blitz"
         elif self.est_game_duration < 1499:
-            return "Rapid"
+            return "rapid"
         else:
-            return "Classical"
+            return "classical"
